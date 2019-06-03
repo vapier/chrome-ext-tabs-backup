@@ -140,7 +140,7 @@ function insertBackupItem (backupName, backupObj, insertAtBeginning, doAnimation
 		return function(event) {
 			bootbox.confirm("Open Windows & Tabs of backup '" + backupName + "'?", function(confirmed) {
 				if (confirmed) {
-					chrome.extension.getBackgroundPage().restoreNow(backupName);
+					chrome.runtime.getBackgroundPage((bg) => bg.restoreNow(backupName));
 				}
 			});
 
@@ -157,8 +157,8 @@ function insertBackupItem (backupName, backupObj, insertAtBeginning, doAnimation
 
 			bootbox.confirm("Delete backup '" + backupName + "'?", function(confirmed) {
 				if (confirmed) {
-					chrome.extension.getBackgroundPage().deleteBackup(backupName, function() {
-						updateStorageInfo();
+					chrome.runtime.getBackgroundPage((bg) => {
+						bg.deleteBackup(backupName, () => updateStorageInfo());
 					});
 
 					//if (elem.parentNode) {
@@ -321,7 +321,7 @@ function menu_backupNow() {
 
 	lastTimeBackupNowClicked = new Date().getTime();
 
-	chrome.extension.getBackgroundPage().backupNowManual(function(success, backupName, backupObj) {
+	chrome.runtime.getBackgroundPage((bg) => bg.backupNowManual(function(success, backupName, backupObj) {
 		if (success) {
 			//updateBackupsList();
 			insertBackupItem (backupName, backupObj, true /*insertAtBeginning*/, true /*doAnimation*/);
@@ -331,12 +331,12 @@ function menu_backupNow() {
 		} else {
 			alert('An error occured while creating the backup..');
 		}
-	});
+	}));
 
 }
 
 function menu_restoreNow() {
-	chrome.extension.getBackgroundPage().restoreNow('full_backup');
+	chrome.runtime.getBackgroundPage((bg) => bg.restoreNow('full_backup'));
 }
 
 //document.onload(function () {

@@ -1,19 +1,11 @@
 
 // Set default values if needed
 if (!localStorage.prefsMaxBackupItems) {
-	localStorage.prefsMaxBackupItems = "30";
+	localStorage.prefsMaxBackupItems = "10";
 }
 
 if (!localStorage.prefsBackupTimer) {
-	localStorage.prefsBackupTimer = "5";
-}
-
-if (!localStorage.lastTimerIntervalId) {
-	localStorage.lastTimerIntervalId = 0;
-}
-
-if (!localStorage.lastTabsEdit) {
-	localStorage.lastTabsEdit = 0;
+	localStorage.prefsBackupTimer = "30";
 }
 
 if (!localStorage.lastBackupTime) {
@@ -26,99 +18,18 @@ if (!localStorage.lastBackupTime) {
 	backupNow(true, formattedDate, function(success, backupName, backupObj) {
 		// backup completed
 	});
-
-	localStorage.lastBackupTime = localStorage.lastTabsEdit;
-}
-
-
-
-// Works only for Event Pages
-/*
-chrome.runtime.onInstalled.addListener(function() {
-	console.log("Extension installed/updates");
-
-	if (localStorage.lastBackupTime != localStorage.lastTabsEdit) {
-		// Create a backup now
-		var d = new Date();
-		var formattedDate = date_format (d);
-
-		backupNow(true, formattedDate, function(success, backupName, backupObj) {
-			// backup completed
-		});
-
-		localStorage.lastBackupTime = localStorage.lastTabsEdit;
-	}
-});*/
-
-chrome.tabs.onRemoved.addListener(function(tabId, removeInfo) {
-	//console.log('tabs.onRemoved');
-
-	tabsEdited(true);
-});
-
-chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
-	//console.log('tabs.onUpdated');
-
-	tabsEdited(true);
-});
-
-chrome.tabs.onAttached.addListener(function(tabId, attachInfo) {
-	//console.log('tabs.onAttached');
-
-	tabsEdited(false);
-});
-
-chrome.tabs.onMoved.addListener(function(tabId, moveInfo) {
-	//console.log('tabs.onMoved');
-
-	tabsEdited(false);
-});
-
-chrome.tabs.onDetached.addListener(function(tabId, detachInfo) {
-	//console.log('tabs.onDetached');
-
-	tabsEdited(false);
-});
-
-chrome.tabs.onCreated.addListener(function(tab) {
-	//console.log('tabs.onCreated');
-
-	tabsEdited(true);
-});
-
-function tabsEdited (isImportant) {
-	var d = new Date();
-	var millis = d.getTime();
-
-	console.log('tabsEdited - lastTabsEdit: ' + localStorage.lastTabsEdit);
-	console.log('tabsEdited - new lastTabsEdit: ' + millis);
-
-	localStorage.lastTabsEdit = millis;
-
-
 }
 
 function initAlarm () {
-	console.log("initAlarm");
+	//console.log("initAlarm");
 
 	var BACKUP_ALARM_NAME = "backup_alarm";
 
 	// Clear any previous alarm
 	chrome.alarms.clearAll();
-	clearInterval(parseInt(localStorage.lastTimerIntervalId));
 
 	var timerMinutes = parseInt(localStorage.prefsBackupTimer);
-
-	// Apparantely once the app is on the Chrome Store it's not possible
-	// to create alarms that have period less than 5 minutes..
-	if (timerMinutes < 5) {
-		var timerMillis = timerMinutes * 60 * 1000;
-		localStorage.lastTimerIntervalId = setInterval (onAlarm, timerMillis);
-		console.log("Created interval alarm - id: " + localStorage.lastTimerIntervalId + " time: " + timerMinutes + " minutes");
-	} else {
-		console.log("Creating chrome.alarm 'backup_alarm' - time: " + timerMinutes + " minutes");
-		chrome.alarms.create(BACKUP_ALARM_NAME, {periodInMinutes: timerMinutes});
-	}
+	chrome.alarms.create(BACKUP_ALARM_NAME, {periodInMinutes: timerMinutes});
 }
 
 initAlarm();
@@ -127,12 +38,10 @@ function onAlarm (alarm) {
 	var d = new Date();
 	var formattedDate = date_format (d);
 
-	console.log("Alarm {" + alarm + "} fired up: " + formattedDate + " last tabs edit: " + localStorage.lastTabsEdit + " last backup time: " + localStorage.lastBackupTime);
+	console.log("Alarm {" + alarm + "} fired up: " + formattedDate);
 
-	// localStorage.lastBackupTime
 	// if last backup time != lastTabsEdit
 	//	perform automatic backup
-	if (localStorage.lastBackupTime != localStorage.lastTabsEdit) {
 		backupNow(true, formattedDate, function(success, backupName, backupObj) {
 			// automatic backup completed
 			var popupViews = chrome.extension.getViews({type: "popup"});
@@ -148,9 +57,6 @@ function onAlarm (alarm) {
 				}
 			}
 		});
-
-		localStorage.lastBackupTime = localStorage.lastTabsEdit;
-	}
 }
 
 chrome.alarms.onAlarm.addListener(onAlarm);
@@ -281,6 +187,9 @@ function backupNow(isAutomatic, backupName, callbackDone) {
 
 			fullBackup.windows.push(bkpWindow);
 		}
+
+		if (totNumTabs == 0)
+			return;
 
 		fullBackup.totNumTabs = totNumTabs;
 
