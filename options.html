@@ -1,0 +1,215 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Tabs Backup & Restore - Options</title>
+    <style>
+      body {
+		font-family: Arial;
+
+        overflow-x:hidden;
+      }
+
+	  #content {
+		min-width:357px;
+		max-width: 500px;
+		margin: 0 auto;
+	  }
+
+      img {
+        margin:5px;
+        border:2px solid black;
+        vertical-align:middle;
+        width:75px;
+        height:75px;
+      }
+
+	  .menuItem {
+		position: relative;
+		background: #edf6fd;
+		padding: 20px;
+		margin-top: 0px;
+		margin-left: 20px;
+		margin-right: 20px;
+		margin-bottom: 20px;
+		color: black;
+		display: block;
+		cursor: hand;
+		cursor: pointer;
+	  }
+
+	  .menuItem:hover {
+		background: #d8edfc;
+	  }
+
+	  .backupItem {
+		position: relative;
+		display: block;
+		background: #f4f4f4;
+		padding: 8px;
+		margin: 8px;
+	  }
+
+	  .backupItemTitle {
+		font-size: 14px;
+		font-weight: bold;
+	  }
+
+	  .backupItemDetails {
+		font-size: 12px;
+		padding: 5px;
+	  }
+
+	  .backupItemDetailsNr {
+		position: absolute;
+		left: 100px;
+	  }
+
+	  .backupItemToolbar {
+		position: absolute;
+		display: block;
+		right: 10px;
+		top: 10px;
+	  }
+
+		.backupItemToolbar a {
+			cursor: hand;
+			cursor: pointer;
+		}
+
+	  .backupItemFooter {
+		position: absolute;
+		display: block;
+		right: 10px;
+		bottom: 10px;
+
+		font-size: 10px;
+	  }
+
+	  .backupItemFooterAutoBackup {
+		color: #23b827;
+	  }
+
+	  .backupItemFooterManualBackup {
+		color: #d95843;
+	  }
+
+	  #backupsListTitle {
+		font-size: 16px;
+		margin: 10px;
+		padding: 10px;
+		padding-bottom: 0px;
+		text-decoration:underline;
+	  }
+
+	  #statusDiv {
+		display: block;
+		font-size: 12px;
+		background-color: #ecffed;
+		padding: 8px;
+		margin-top: 4px;
+		height: 16px;
+	  }
+
+	  #prefs {
+		margin-top: 10px;
+	  }
+
+	  .prefsRow td {
+		padding-top: 20px;
+	  }
+
+	  .prefsDescription {
+		font-size: 12px;
+		color: grey;
+	  }
+
+	  #buttonsDiv {
+	    position: relative;
+		margin-top: 20px;
+	  }
+
+	  #smallDescription {
+		font-size: 12px;
+		color: grey;
+	  }
+
+	  select {
+		padding: 5px;
+	  }
+    </style>
+
+	<!-- <script src="jquery-1.8.2.min.js"></script> -->
+    <!-- JavaScript and HTML must be in separate files for security. -->
+    <script src="options.js?v=2"></script>
+
+  </head>
+  <body>
+  <div id="content">
+
+	  <img src="icon.png" style="border: 0; padding: 10px;" /><b>Tabs Backup & Restore - Options</b>
+
+
+
+	  <div id="smallDescription">
+	  With Tabs Backup & Restore you will never lose your work again!<br /><br />
+	  Backup an entire Chrome session (all opened windows and tabs) and restore it when needed.<br />
+	  Backups are created automatically, but can also be created manually whenever you want.
+	  </div>
+
+	  <div id="prefs">
+
+	  <table>
+		<tr class="prefsRow">
+			<td width="200">Auto backup every<br />
+	  </td>
+			<td><select id="prefsSelectBackupPeriod">
+			  <option value="1">1 minute</option>
+			  <option value="2">2 minutes</option>
+			  <option value="3">3 minutes</option>
+			  <option value="5">5 minutes</option>
+			  <option value="10">10 minutes</option>
+			  <option value="15">15 minutes</option>
+			  <option value="30">30 minutes</option>
+			  <option value="45">45 minutes</option>
+			  <option value="60">1 hour</option>
+			  <option value="120">2 hours</option>
+			  <option value="240">4 hours</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td colspan="2" class="prefsDescription">
+				A backup is created only when something has changed from the previous one. A change is considered when a window or tab is created, closed or moved.
+			</td>
+		</tr>
+
+		<tr class="prefsRow">
+			<td width="200">Max number of backups</td>
+			<td>
+			<select id="prefsSelectMaxBackups">
+			  <option value="10">10</option>
+			  <option value="15">15</option>
+			  <option value="20">20</option>
+			  <option value="30">30</option>
+			  <option value="60">60</option>
+			  <option value="80">80</option>
+			</select>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" class="prefsDescription">
+				The maximum number of backups to keep. Old backups will be deleted when this number is reached.
+			</td>
+		</tr>
+	  </table>
+
+	  </div>
+
+		<div id="buttonsDiv">
+			<button id="saveBtn" style="padding: 10px 20px;">Save</button>
+			<a href="#" id="restoreDefaultBtn" style="position: absolute; right: 0px; top: 24px; font-size: 10px;">Restore options to default</a>
+			<div id="statusDiv"></div>
+
+		</div>
+  </div>
+  </body>
+</html>

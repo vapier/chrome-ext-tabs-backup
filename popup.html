@@ -1,0 +1,182 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Tabs Backup & Restore</title>
+    <style>
+
+	::-webkit-scrollbar {
+		width: 10px;
+	}
+
+	::-webkit-scrollbar-track {
+		background-color: #f4f4f4;
+	}
+
+	::-webkit-scrollbar-thumb {
+		background-color: #b9b9b9;
+	}
+
+
+      body {
+		font-family: Arial;
+        min-width:357px;
+		overflow-x: hidden;
+      }
+
+	  a {
+		cursor: hand;
+		cursor: pointer;
+	  }
+
+      img {
+        margin:5px;
+        border:2px solid black;
+        vertical-align:middle;
+        width:75px;
+        height:75px;
+      }
+
+	  .menuItem {
+		position: relative;
+		background: #edf6fd;
+		padding: 20px;
+		margin-top: 0px;
+		margin-left: 20px;
+		margin-right: 20px;
+		margin-bottom: 10px;
+		color: black;
+		display: block;
+		cursor: hand;
+		cursor: pointer;
+	  }
+
+	  .menuItem:hover {
+		background: #d8edfc;
+	  }
+
+	  .backupItem {
+
+
+	  }
+
+	  .backupItemWrapper {
+		padding: 4px 8px;
+	  }
+
+	  .backupItemContent {
+		position: relative;
+		padding: 8px;
+		background: #f4f4f4;
+	  }
+
+	  .backupItemTitle {
+		font-size: 14px;
+		font-weight: bold;
+	  }
+
+	  .backupItemDetails {
+		font-size: 12px;
+		padding: 5px;
+	  }
+
+	  .backupItemDetailsNr {
+		position: absolute;
+		left: 100px;
+	  }
+
+	  .backupItemToolbar {
+		position: absolute;
+		display: block;
+		right: 10px;
+		top: 10px;
+	  }
+
+		.backupItemToolbar a {
+			cursor: hand;
+			cursor: pointer;
+		}
+
+	  .backupItemFooter {
+		position: absolute;
+		display: block;
+		right: 10px;
+		bottom: 10px;
+
+		font-size: 10px;
+	  }
+
+	  .backupItemFooterAutoBackup {
+		color: #23b827;
+	  }
+
+	  .backupItemFooterManualBackup {
+		color: #d95843;
+	  }
+
+	  #backupsListTitle {
+		position: relative;
+		font-size: 15px;
+		margin: 4px 10px;
+		padding: 10px;
+		padding-bottom: 0px;
+		text-decoration:underline;
+	  }
+
+	  #storageDiv {
+		margin-top: 4px;
+		text-align: center;
+		font-size: 10px;
+		color: grey;
+	  }
+
+	  #showOlderBackupsDiv {
+		text-align: center;
+	  }
+    </style>
+
+	<link rel="stylesheet" type="text/css" href="bootstrap.min.css" />
+    <script src="jquery-1.8.2.min.js"></script>
+	<script src="bootstrap.min.js"></script>
+	<script src="bootbox.min.js"></script>
+
+	<style>
+	.modal {
+		width:300px;
+		margin:-150px 0 0 -150px;
+	}
+	</style>
+    <!-- JavaScript and HTML must be in separate files for security. -->
+    <script src="popup.js?v=201211062258"></script>
+
+  </head>
+  <body>
+
+  <!-- <button id="btnDoSomething">Do SOmething</button> -->
+  <img src="icon.png" style="border: 0; padding-left: 8px; padding-right: 8px; width: 48px;" /><b>Tabs Backup & Restore</b>
+
+  <a id="menuItem_options" style="position: absolute; right: 4px; top: 12px;">Options<img src="img/options.png" style="width: 24px;" /></a>
+
+  <div id="menuItem_backupNow" class="menuItem" title="Create Backup">
+	Create Backup Now
+
+	<div style="position: absolute; right: 20px; top: 0px; ">
+		<img src="create_bkp_64.png" style="border: 0; width: 48px; height: 48px"  />
+	</div>
+  </div>
+
+
+  <div id="backupsListTitle">
+	Your Backups
+	<a id="menuItem_showAdvancedView" style="position: absolute; right: 0px; top: 2px;">Advanced Restore<img src="img/advanced_restore.png" style="width: 24px;" /></a>
+  </div>
+	<div id="backupsDiv"></div>
+
+	<div id="showOlderBackupsDiv">
+		<a id="menuItem_showOlderBackups" style="">Show all backups..</a>
+	</div>
+
+	<div id="storageDiv">
+		Backups size: <span id="storageSpan"></span>
+	</div>
+  </body>
+</html>

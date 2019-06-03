@@ -1,0 +1,394 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Tabs Backup & Restore</title>
+    <style>
+		::-webkit-scrollbar {
+		width: 10px;
+	}
+
+	::-webkit-scrollbar-track {
+		background-color: #f4f4f4;
+	}
+
+	::-webkit-scrollbar-thumb {
+		background-color: #b9b9b9;
+	}
+
+      body {
+		font-family: Arial;
+
+		overflow-x: hidden;
+      }
+
+	  #content {
+		min-width:680px;
+		max-width: 680px;
+		margin: 0 auto;
+		position: relative;
+	  }
+
+	  #contentWrapper {
+		margin-left: -50px;
+		margin-right: 50px;
+	  }
+
+	  a {
+		cursor: hand;
+		cursor: pointer;
+	  }
+
+      img {
+        margin:5px;
+        border:2px solid black;
+        vertical-align:middle;
+        width:75px;
+        height:75px;
+      }
+
+	  .menuItem {
+		position: relative;
+		background: #edf6fd;
+		padding: 20px;
+		margin-top: 0px;
+		margin-left: 20px;
+		margin-right: 20px;
+		margin-bottom: 10px;
+		color: black;
+		display: block;
+		cursor: hand;
+		cursor: pointer;
+	  }
+
+	  .menuItem:hover {
+		background: #d8edfc;
+	  }
+
+	  .backupItem {
+
+
+	  }
+
+	  .backupItemWrapper {
+		padding: 4px 8px;
+	  }
+
+	  .backupItemContent {
+		position: relative;
+		padding: 8px;
+		background: #f4f4f4;
+		cursor: pointer;
+	  }
+
+	  .backupItemContent:hover {
+		background: #e4e4e4;
+	  }
+
+	  .backupItemTitle {
+		font-size: 14px;
+		font-weight: bold;
+	  }
+
+	  .backupItemDetails {
+		font-size: 12px;
+		padding: 5px;
+	  }
+
+	  .backupItemDetailsNr {
+		position: absolute;
+		left: 100px;
+	  }
+
+	  .backupItemToolbar {
+		position: absolute;
+		display: block;
+		right: 10px;
+		top: 10px;
+	  }
+
+		.backupItemToolbar a {
+			cursor: hand;
+			cursor: pointer;
+		}
+
+	  .backupItemFooter {
+		position: absolute;
+		display: block;
+		right: 10px;
+		bottom: 10px;
+
+		font-size: 10px;
+	  }
+
+	  .backupItemFooterAutoBackup {
+		color: #23b827;
+	  }
+
+	  .backupItemFooterManualBackup {
+		color: #d95843;
+	  }
+
+	  #backupsListTitle {
+		position: relative;
+		font-size: 15px;
+		margin: 4px 10px;
+		padding: 10px;
+		padding-bottom: 0px;
+		text-decoration:underline;
+	  }
+
+	  #storageDiv {
+		margin-top: 4px;
+		text-align: center;
+		font-size: 10px;
+		color: grey;
+	  }
+
+	  #showOlderBackupsDiv {
+		text-align: center;
+		margin-bottom: 10px;
+	  }
+
+	  .restoreDiv {
+		position: relative;
+		padding: 20px;
+	  }
+
+	  .restoreDivCollapseExpand {
+		position: absolute;
+		right: 26px;
+		margin-top: -16px;
+	  }
+
+	  .restoreTabSpan {
+		display: block;
+		margin-left: 8px;
+		overflow: hidden;
+		max-height: 20px;
+		position: absolute;
+		top: 0px;
+		left: 20px;
+	  }
+
+	  #floatingRightDiv {
+		display: none;
+		width: 150px;
+		position: fixed;
+		top: 50%;
+
+		margin-top: -100px;
+		margin-left: 700px;
+
+		padding: 6px;
+		border: 1px solid black;
+		background-color: #F3F3F3;
+	  }
+
+	  #restoreSelectedDiv {
+		float: right;
+		padding: 10px;
+		text-align: center;
+		font-size: 14px;
+		font-weight: bold;
+		background-color: #d8e8f0;
+		cursor: pointer;
+		margin-top: 10px;
+	  }
+
+	  #restoreSelectedDiv:hover {
+		background-color: #b0d7eb;
+	  }
+
+	  #restoreSelectedInfoDiv {
+		float: right;
+	  }
+
+	  #restoreSelectedRadio {
+		float: right;
+		font-size: 10px;
+		margin-top: 10px;
+	  }
+
+	  .windowTitleDiv {
+		padding: 10px;
+		margin: 4px;
+		background-color: #e0ebdb;
+		cursor: pointer;
+	  }
+
+	  .windowTitleDiv:hover {
+		background-color: #cce2c2;
+	  }
+
+	  .tabsDiv {
+		margin-left: 20px;
+	  }
+
+	  #smallDescription {
+		padding: 10px;
+		font-size: 12px;
+		color: grey;
+	  }
+
+	  .radioSpanLabel {
+		cursor: default;
+	  }
+    </style>
+
+	<style>
+	label {
+		display: inline;
+	}
+
+	.regular-checkbox {
+		display: none;
+	}
+
+	.regular-checkbox + label {
+		background-color: #fafafa;
+		border: 1px solid #cacece;
+		box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05);
+		padding: 9px;
+		border-radius: 3px;
+		display: inline-block;
+		position: relative;
+	}
+
+	.regular-checkbox + label:active, .regular-checkbox:checked + label:active {
+		box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px 1px 3px rgba(0,0,0,0.1);
+	}
+
+	.regular-checkbox:checked + label {
+		background-color: #e9ecee;
+		border: 1px solid #adb8c0;
+		box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05), inset 15px 10px -12px rgba(255,255,255,0.1);
+		color: #99a1a7;
+	}
+
+	.regular-checkbox:checked + label:after {
+		content: '\2714';
+		font-size: 14px;
+		position: absolute;
+		top: 0px;
+		left: 3px;
+		color: #99a1a7;
+	}
+	.labelCheckbox {
+		margin: 0px;
+		cursor: pointer;
+	}
+	</style>
+	<style>
+	.regular-radio {
+	 display: none;
+	}
+
+	.regular-radio + label {
+		-webkit-appearance: none;
+		background-color: #fafafa;
+		border: 1px solid #cacece;
+		box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05);
+		padding: 7px;
+		border-radius: 50px;
+		display: inline-block;
+		position: relative;
+		margin-bottom: -3px;
+	}
+
+	.regular-radio:checked + label:after {
+		content: ' ';
+		width: 8px;
+		height: 8px;
+		border-radius: 50px;
+		position: absolute;
+		top: 3px;
+		background: #99a1a7;
+		box-shadow: inset 0px 0px 10px rgba(0,0,0,0.3);
+		text-shadow: 0px;
+		left: 3px;
+		font-size: 32px;
+	}
+
+	.regular-radio:checked + label {
+		background-color: #e9ecee;
+		color: #99a1a7;
+		border: 1px solid #adb8c0;
+		box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05), inset 15px 10px -12px rgba(255,255,255,0.1), inset 0px 0px 10px rgba(0,0,0,0.1);
+	}
+
+	.regular-radio + label:active, .regular-radio:checked + label:active {
+		box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px 1px 3px rgba(0,0,0,0.1);
+	}
+	</style>
+
+	<link rel="stylesheet" type="text/css" href="bootstrap.min.css" />
+    <script src="jquery-1.8.2.min.js"></script>
+	<script src="bootstrap.min.js"></script>
+	<script src="bootbox.min.js"></script>
+
+	<style>
+	.modal {
+		width:300px;
+		margin:-150px 0 0 -150px;
+	}
+	</style>
+    <!-- JavaScript and HTML must be in separate files for security. -->
+    <script src="advanced.js?v=201211062258"></script>
+
+  </head>
+  <body>
+  <div id="content">
+  <div id="contentWrapper">
+
+  <!-- <button id="btnDoSomething">Do SOmething</button> -->
+  <img src="icon.png" style="border: 0; padding: 10px;" /><b>Tabs Backup & Restore - Advanced</b>
+
+  <a href="https://chrome.google.com/webstore/detail/tabs-backup-restore/dehocbglhkaogiljpihicakmlockmlgd/reviews" target="_blank" style="position: absolute; right: 54px; top: 12px;">Rate on the Chrome Store<img src="img/chrome-web-store.png" style="width: 24px;" /></a>
+
+  <div id="smallDescription">
+		With <i>Advanced Restore</i> you can restore a custom selection of your backups!<br />
+		<ul style="margin-top: 5px">
+		<li>Click on a Backup entry to expand it, and view all the windows that were backed up.</li>
+		<li>Click on a Window entry to view all the tabs it contained.</li>
+		<li>Select the checkboxes to make your selection.</li>
+		<li>Press the "Restore Selected" button when you are ready to restore.</li>
+		</ul>
+
+	</div>
+
+  <div id="backupsListTitle">
+	Your Backups
+  </div>
+	<div id="backupsDiv"></div>
+
+	<div id="showOlderBackupsDiv">
+		<a id="menuItem_showOlderBackups">Show all backups..</a>
+	</div>
+
+
+	<div id="floatingRightDiv">
+		<div>
+			<a id="restoreSelectedClearSelectionLink" style="float: right; padding-bottom: 4px;">Clear selection</a>
+		</div>
+
+		<div id="restoreSelectedInfoDiv">
+				Selected tabs: <span id="restoreSelectedInfoNumTabs" style="font-weight: bold;"></span>
+			</div>
+
+		<div id="restoreSelectedDiv">
+			Restore selected <img src="icon_48.png" style="width: 26px;" />
+		</div>
+		<div id="restoreSelectedRadio">
+			<input type="radio" id="restoreSelectedRadioSingleWindow" name="radio-1-set" class="regular-radio" checked />
+			<label for="restoreSelectedRadioSingleWindow" title="Restore all selected tabs into a single window"></label>
+			<span id="restoreSelectedRadioSingleWindowSpanLabel" class="radioSpanLabel" title="Restore all selected tabs into a single window"> Restore to a single window</span><br />
+
+			<input type="radio" id="restoreSelectedRadioMultipleWindows" name="radio-1-set" class="regular-radio" />
+			<label for="restoreSelectedRadioMultipleWindows" title="Restore selected tabs into their respective window"></label>
+			<span id="restoreSelectedRadioMultipleWindowsSpanLabel" class="radioSpanLabel" title="Restore selected tabs into their respective window"> Restore to multiple windows</span>
+		</div>
+	</div>
+	</div>
+	</div>
+  </body>
+</html>
