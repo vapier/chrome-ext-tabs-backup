@@ -165,10 +165,25 @@ function backupNow(isAutomatic, backupName, callbackDone) {
 			//console.log ("Window " + i);
 
 			var bkpWindow = {
+				state: window.state,
+				top: window.top,
+				left: window.left,
+				width: window.width,
+				height: window.height,
 				tabs: []
 			};
 
 			var windowTabs = window.tabs;
+
+			// If it's a single window sittig at the new tab page, don't bother
+			// saving it.  This is a nice shortcut when things crash as it will
+			// only show a single window.
+			if (windowTabs.length == 1) {
+				const tab = windowTabs[0];
+				if (tab.title == 'New Tab' && tab.url == 'chrome://newtab/')
+					continue;
+			}
+
 			for (var j = 0; j < windowTabs.length; j++) {
 				var tab = windowTabs[j];
 
@@ -176,7 +191,9 @@ function backupNow(isAutomatic, backupName, callbackDone) {
 
 				var bkpTab = {
 					url: tab.url,
-					title: tab.title
+					title: tab.title,
+					highlighted: tab.highlighted,
+					pinned: tab.pinned,
 				};
 
 				// Add tab to tabs arrays
@@ -327,50 +344,66 @@ function restoreNow(backupName) {
 		var fullBackup = items[backupName];
 
 		for(var i=0;i<fullBackup.windows.length;i++) {
-			var window = fullBackup.windows[i];
+			const window = fullBackup.windows[i];
 
 			//console.log ("Window " + i);
 
 			urlsToOpen = [];
 
-			var windowTabs = window.tabs;
-			for (var j = 0; j < windowTabs.length; j++) {
-				var tab = windowTabs[j];
-				var tabUrl = tab.url;
+			const windowTabs = window.tabs;
+			for (let j = 0; j < windowTabs.length; j++) {
+				const tab = windowTabs[j];
+				const tabUrl = tab.url;
 				urlsToOpen.push(tabUrl);
 			}
 
-			var windowProperties = {
-				url: urlsToOpen
+			const windowProperties = {
+				state: 'normal',
+				url: urlsToOpen,
+				top: window.top,
+				left: window.left,
+				width: window.width,
+				height: window.height,
 			};
 
 			// Create a new Window
 			chrome.windows.create(windowProperties, function(createdWindow) {
-				//console.log("Created window id: " + createdWindow.id);
+				// Chrome errors if the dimensions are set on non-normal windows.
+				// So we create the window first with the right settings, then
+				// update the window state.
+				if (window.state != 'normal') {
+					chrome.windows.update(createdWindow.id, {state: window.state});
+				}
 
-				//chrome.tabs.remove(createdWindow.tabs[0].id);
-
-				// Create new tabs
-				/*var windowTabs = window.tabs;
-				for (var j = 0; j < windowTabs.length; j++) {
-					var tab = windowTabs[j];
-					var tabUrl = tab.url;
-
-					console.log("==> Tab " + j + ": " + tabUrl);
-
-					var tabProperties = {
-						url: tabUrl,
-						windowId: createdWindow.id
-					};
-
-					chrome.tabs.create(tabProperties, function(createdTab) {
-						// do nothing..
-					});
-				}*/
+				chrome.windows.get(createdWindow.id, {populate: true}, ({tabs}) => {
+					for (let tabi = 0; tabi < windowTabs.length; ++tabi) {
+						const oldtab = windowTabs[tabi];
+						const newtab = tabs[tabi];
+						chrome.tabs.update(newtab.id, {
+							highlighted: oldtab.highlighted,
+							pinned: oldtab.pinned,
+						}, () => {
+							if (!oldtab.highlighted) {
+								// If we discard a tab too fast, Chrome will completely
+								// throw it away.  Wait until it's in a stable enough
+								// state for us to discard it.
+								let retryCount = 60;
+								const checktab = (id) => {
+									if (retryCount-- < 0)
+										return;
+									chrome.tabs.get(id, (tab) => {
+										if (tab.pendingUrl)
+											setTimeout(() => checktab(id), 500);
+										else
+											chrome.tabs.discard(id);
+									});
+								};
+								checktab(newtab.id);
+							}
+						});
+					}
+				});
 			});
-
-
-
 		}
 	});
 }
