@@ -488,8 +488,9 @@ function showAdvancedRestoreFor (backupName) {
 
 
 			var windowTitleSpan = document.createElement('span');
-			windowTitleSpan.innerHTML = '<span style="font-weight: bold">Window ' + (i+1) + '</span>' +
-										'<span style="float: right; font-size: 11px;">Tabs: ' + windowTabs.length + '</span>';
+			windowTitleSpan.innerHTML =
+				`<span style="font-weight: bold">Window ${i + 1} (${window.state}) ${window.width}×${window.height} @ ${window.top}×${window.left}</span>` +
+				`<span style="float: right; font-size: 11px;">Tabs: ${windowTabs.length}</span>`;
 			//windowTitleSpan.innerHTML = '<span>Window ' + (i+1) + '</span>' +
 			//							'<br /><span style="font-size: 10px;">Nr. Tabs: ' + windowTabs.length + '</span>';
 
@@ -528,7 +529,9 @@ function showAdvancedRestoreFor (backupName) {
 				var tabSpanElem = document.createElement('span');
 				tabSpanElem.className = "restoreTabSpan";
 				var title = tabTitle === '' ? tabUrl : tabTitle;
-				tabSpanElem.innerHTML = '<a href="' + tabUrl + '" target="_blank">' + title + '</a>';
+				tabSpanElem.innerHTML =
+					(tab.pinned ? '📌 ' : '') +
+					`<a href="${tabUrl}" target="_blank">${title}</a>`;
 
 				tabElem.appendChild(checkboxTabElem);
 				tabElem.appendChild(checkboxTabLabelElem);
