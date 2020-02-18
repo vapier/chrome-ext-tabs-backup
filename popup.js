@@ -298,9 +298,9 @@ function updateStorageInfo() {
 		if (bytesInUse < 1024) {
 			storageText = bytesInUse.toFixed(2) + " bytes";
 		} else if (bytesInUse < 1024 * 1024) {
-			storageText = (bytesInUse / 1024).toFixed(2)  + " Kb";
+			storageText = (bytesInUse / 1024).toFixed(2)  + " KiB";
 		} else {
-			storageText = (bytesInUse / (1024 * 1024)).toFixed(2) + " Mb";
+			storageText = (bytesInUse / (1024 * 1024)).toFixed(2) + " MiB";
 		}
 
 		var storageSpan = document.getElementById("storageSpan");
