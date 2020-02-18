@@ -338,16 +338,3 @@ function menu_backupNow() {
 function menu_restoreNow() {
 	chrome.runtime.getBackgroundPage((bg) => bg.restoreNow('full_backup'));
 }
-
-//document.onload(function () {
-//var a = document.getElementById("myid");
-//a.innerHTML = "ciaociao";
-//});
-
-/*
-var storageLocal = chrome.storage.local;
-storageLocal.getBytesInUse(null, function(bytesInUse) {
-	var elem = document.createElement("div");
-	elem.innerHTML = "<b>BYTES IN USE: " + bytesInUse + "</b><br />";
-	document.body.appendChild(elem);
-});*/
