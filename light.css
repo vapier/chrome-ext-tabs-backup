@@ -1,0 +1,7 @@
+:root {
+	/* NB: No space after colon. */
+	--theme:light;
+	--body-color: white;
+	--body-filter:;
+	--img-filter:;
+}

@@ -1,0 +1,7 @@
+:root {
+	/* NB: No space after colon. */
+	--theme:dark;
+	--body-color: black;
+	--body-filter: invert(1);
+	--img-filter: invert(1);
+}

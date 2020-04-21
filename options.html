@@ -3,10 +3,18 @@
   <head>
     <meta charset='utf-8'/>
     <title>Tabs Backup & Restore - Options</title>
+
+    <link rel='stylesheet' href='dark.css' media='(prefers-color-scheme: dark)'/>
+    <link rel='stylesheet' href='light.css' media='(prefers-color-scheme: light), (prefers-color-scheme: no-preference)'/>
+    <!-- Load theme override asap to help with initial loading/flashing. -->
+    <link rel='stylesheet' href='' id='theme-override'/>
+    <script src="theme-init.js"></script>
+
     <style>
       body {
 		font-family: Arial;
-
+		background-color: var(--body-color);
+		filter: var(--body-filter);
         overflow-x:hidden;
       }
 
@@ -22,6 +30,7 @@
         vertical-align:middle;
         width:75px;
         height:75px;
+		filter: var(--img-filter);
       }
 
 	  .menuItem {
@@ -137,6 +146,10 @@
 	  select {
 		padding: 5px;
 	  }
+
+	  button.selected {
+		filter: invert(1);
+	  }
     </style>
 
 	<!-- <script src="jquery-1.8.2.min.js"></script> -->
@@ -201,6 +214,22 @@
 				The maximum number of backups to keep. Old backups will be deleted when this number is reached.
 			</td>
 		</tr>
+
+		<tr class="prefsRow">
+			<td width="200">Theme</td>
+			<td>
+			<input type="text" id="prefsTheme" hidden>
+			<button id="theme-light">Light</button>
+			<button id="theme-system">System</button>
+			<button id="theme-dark">Dark</button>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" class="prefsDescription">
+				The color scheme to use in this extension.
+			</td>
+		</tr>
+
 	  </table>
 
 	  </div>

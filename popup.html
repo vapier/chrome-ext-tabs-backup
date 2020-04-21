@@ -3,6 +3,13 @@
   <head>
     <meta charset='utf-8'/>
     <title>Tabs Backup & Restore</title>
+
+    <link rel='stylesheet' href='dark.css' media='(prefers-color-scheme: dark)'/>
+    <link rel='stylesheet' href='light.css' media='(prefers-color-scheme: light), (prefers-color-scheme: no-preference)'/>
+    <!-- Load theme override asap to help with initial loading/flashing. -->
+    <link rel='stylesheet' href='' id='theme-override'/>
+    <script src="theme-init.js"></script>
+
     <style>
 
 	::-webkit-scrollbar {
@@ -17,6 +24,11 @@
 		background-color: #b9b9b9;
 	}
 
+
+	  html {
+		background-color: var(--body-color);
+		filter: var(--body-filter);
+	  }
 
       body {
 		font-family: Arial;
@@ -35,6 +47,7 @@
         vertical-align:middle;
         width:75px;
         height:75px;
+		filter: var(--img-filter);
       }
 
 	  .menuItem {
