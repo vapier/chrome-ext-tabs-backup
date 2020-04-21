@@ -180,7 +180,7 @@ function backupNow(isAutomatic, backupName, callbackDone) {
 			// only show a single window.
 			if (windowTabs.length == 1) {
 				const tab = windowTabs[0];
-				if (tab.title == 'New Tab' && tab.url == 'chrome://newtab/')
+				if (tab.url == 'chrome://newtab/')
 					continue;
 			}
 
