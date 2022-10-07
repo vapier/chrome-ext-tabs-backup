@@ -7,5 +7,6 @@ function switchTheme(theme) {
 		css.href = '';
 	}
 }
-
-switchTheme(localStorage.prefsTheme);
+chrome.storage.local.get(function(items) {
+	switchTheme(items.prefs_theme);
+});

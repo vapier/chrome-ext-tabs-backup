@@ -1,15 +1,35 @@
-
-// Set default values if needed
-if (!localStorage.prefsMaxBackupItems) {
-	localStorage.prefsMaxBackupItems = "10";
+// Migrate old localStorage to chrome.storage.local.
+if (localStorage.prefsMaxBackupItems !== undefined) {
+	chrome.storage.local.set({
+		prefs_max_backup_items: parseInt(localStorage.prefsMaxBackupItems),
+	});
+	localStorage.removeItem("prefsMaxBackupItems");
 }
-
-if (!localStorage.prefsBackupTimer) {
-	localStorage.prefsBackupTimer = "30";
+if (localStorage.prefsBackupTimer !== undefined) {
+	chrome.storage.local.set({
+		prefs_backup_timer: parseInt(localStorage.prefsBackupTimer),
+	});
+	localStorage.removeItem("prefsBackupTimer");
 }
+if (localStorage.prefsTheme !== undefined) {
+	chrome.storage.local.set({
+		prefs_theme: localStorage.prefsTheme,
+	});
+	localStorage.removeItem("prefsTheme");
+}
+localStorage.removeItem("lastBackupTime");
 
-// Create a backup on first install (or if storage is wiped for some reason).
-chrome.storage.local.get("backups_list", function(items) {
+// Create a backup on first install (or if storage is wiped for some reason.
+chrome.storage.local.get(function(items) {
+	// Setup defaults.
+	if (items.prefs_max_backup_items === undefined) {
+		chrome.storage.local.set({prefs_max_backup_items: 10});
+	}
+	if (items.prefs_backup_timer === undefined) {
+		chrome.storage.local.set({prefs_backup_timer: 30});
+	}
+
+	// If a backup exists already, nothing to do.
 	if (items.backups_list) {
 		return;
 	}
@@ -31,8 +51,10 @@ function initAlarm () {
 	// Clear any previous alarm
 	chrome.alarms.clearAll();
 
-	var timerMinutes = parseInt(localStorage.prefsBackupTimer);
-	chrome.alarms.create(BACKUP_ALARM_NAME, {periodInMinutes: timerMinutes});
+	chrome.storage.local.get(function(items) {
+		const timerMinutes = items.prefs_backup_timer;
+		chrome.alarms.create(BACKUP_ALARM_NAME, {periodInMinutes: timerMinutes});
+	});
 }
 
 initAlarm();
@@ -89,13 +111,13 @@ function backupNowManual (callbackDone) {
 }
 
 function deleteOldestBackup () {
-	chrome.storage.local.get("backups_list", function(items) {
+	chrome.storage.local.get(function(items) {
 		if(!items.backups_list) {
 			return;
 		}
 
 		var backupsList = items.backups_list;
-		var numItemsToDelete = backupsList.length - parseInt(localStorage.prefsMaxBackupItems);
+		var numItemsToDelete = backupsList.length - items.prefs_max_backup_items;
 		if (numItemsToDelete > 0) {
 			var i = 0;
 			var loopFunc = function () {
@@ -229,7 +251,7 @@ function backupNow(isAutomatic, backupName, callbackDone) {
 				console.log("backup saved");
 				//alert("Backup saved successfully!");
 
-				chrome.storage.local.get("backups_list", function(items) {
+				chrome.storage.local.get(function(items) {
 					var backupsList = [];
 					if(items.backups_list) {
 						backupsList = items.backups_list;
@@ -252,7 +274,7 @@ function backupNow(isAutomatic, backupName, callbackDone) {
 							updateBrowserActionIcon (0);
 							callbackDone(true, backupName, fullBackup);
 
-							if (backupsList.length > parseInt(localStorage.prefsMaxBackupItems)) {
+							if (backupsList.length > items.prefs_max_backup_items) {
 								deleteOldestBackup();
 							}
 						}

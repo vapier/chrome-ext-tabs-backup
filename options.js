@@ -54,14 +54,11 @@ function setThemeValue(value) {
 }
 
 function saveOptions () {
-	var backupPeriodMinutes = getSelectValue("prefsSelectBackupPeriod");
-	localStorage.prefsBackupTimer = backupPeriodMinutes;
-
-	var backupMaxItems = getSelectValue("prefsSelectMaxBackups");
-	localStorage.prefsMaxBackupItems = backupMaxItems;
-
-	var theme = document.getElementById('prefsTheme').value;
-	localStorage.prefsTheme = theme;
+	chrome.storage.local.set({
+		prefs_backup_timer: getSelectValue("prefsSelectBackupPeriod"),
+		prefs_max_backup_items: getSelectValue("prefsSelectMaxBackups"),
+		prefs_theme: document.getElementById('prefsTheme').value,
+	});
 
 	// Re-initialize the backup alarm
 	chrome.runtime.getBackgroundPage((bg) => bg.initAlarm());
@@ -84,11 +81,9 @@ function restoreToDefault() {
 }
 
 function restoreOptions() {
-	var backupPeriodMinutes = localStorage.prefsBackupTimer;
-	var backupMaxItems = localStorage.prefsMaxBackupItems;
-	var theme = localStorage.prefsTheme;
-
-	setSelectValue ("prefsSelectBackupPeriod", backupPeriodMinutes);
-	setSelectValue ("prefsSelectMaxBackups", backupMaxItems);
-	setThemeValue(theme);
+	chrome.storage.local.get(function(items) {
+		setSelectValue("prefsSelectBackupPeriod", items.prefs_backup_timer);
+		setSelectValue("prefsSelectMaxBackups", items.prefs_max_backup_items);
+		setThemeValue(items.prefs_theme);
+	});
 }
