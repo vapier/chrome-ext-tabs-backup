@@ -1,24 +1,3 @@
-// Migrate old localStorage to chrome.storage.local.
-if (localStorage.prefsMaxBackupItems !== undefined) {
-	chrome.storage.local.set({
-		prefs_max_backup_items: parseInt(localStorage.prefsMaxBackupItems),
-	});
-	localStorage.removeItem("prefsMaxBackupItems");
-}
-if (localStorage.prefsBackupTimer !== undefined) {
-	chrome.storage.local.set({
-		prefs_backup_timer: parseInt(localStorage.prefsBackupTimer),
-	});
-	localStorage.removeItem("prefsBackupTimer");
-}
-if (localStorage.prefsTheme !== undefined) {
-	chrome.storage.local.set({
-		prefs_theme: localStorage.prefsTheme,
-	});
-	localStorage.removeItem("prefsTheme");
-}
-localStorage.removeItem("lastBackupTime");
-
 // Create a backup on first install (or if storage is wiped for some reason.
 chrome.storage.local.get(function(items) {
 	// Setup defaults.
@@ -304,7 +283,7 @@ function updateBrowserActionIcon (status) {
 			break;
 	}
 
-	chrome.browserAction.setIcon({path: icon});
+	chrome.action.setIcon({path: icon});
 }
 
 function deleteBackup (backupName, callback) {

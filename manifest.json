@@ -1,20 +1,20 @@
 {
   "name": "vapier tabs backup",
-  "version": "0.3",
-  "manifest_version": 2,
+  "version": "1.0",
+  "manifest_version": 3,
   "description": "With 'Tabs Backup & Restore' you will never lose your work again! Backup an entire Chrome session (windows and tabs).",
   "icons": { "16": "icon_16.png",
            "48": "icon_48.png",
           "128": "icon_128.png" },
   "background": {
-	"persistent": false,
-	"scripts": ["background.js"]
+	"service_worker": "background.js",
+	"type": "module"
   },
   "options_ui": {
     "page": "options.html",
-    "chrome_style": true
+    "open_in_tab": false
   },
-  "browser_action": {
+  "action": {
     "default_icon": "icon_48.png",
 	"default_popup": "popup.html"
   },
