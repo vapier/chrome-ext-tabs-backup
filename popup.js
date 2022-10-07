@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function menu_ShowOptions () {
-	chrome.tabs.create({url:chrome.extension.getURL("options.html")});
+	chrome.runtime.openOptionsPage();
 }
 
 function menu_ShowAdvancedView() {
