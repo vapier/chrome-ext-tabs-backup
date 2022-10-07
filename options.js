@@ -55,8 +55,8 @@ function setThemeValue(value) {
 
 function saveOptions () {
 	chrome.storage.local.set({
-		prefs_backup_timer: getSelectValue("prefsSelectBackupPeriod"),
-		prefs_max_backup_items: getSelectValue("prefsSelectMaxBackups"),
+		prefs_backup_timer: parseInt(getSelectValue("prefsSelectBackupPeriod")),
+		prefs_max_backup_items: parseInt(getSelectValue("prefsSelectMaxBackups")),
 		prefs_theme: document.getElementById('prefsTheme').value,
 	});
 
