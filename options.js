@@ -61,7 +61,7 @@ function saveOptions () {
 	});
 
 	// Re-initialize the backup alarm
-	chrome.runtime.getBackgroundPage((bg) => bg.initAlarm());
+	chrome.runtime.sendMessage({action: 'initAlarm'});
 
 	// Update status to let user know options were saved.
 	var status = document.getElementById("statusDiv");

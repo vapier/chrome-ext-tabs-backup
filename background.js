@@ -38,7 +38,7 @@ chrome.storage.local.get(function(items) {
 	var d = new Date();
 	var formattedDate = date_format (d);
 
-	backupNow(true, formattedDate, function(success, backupName, backupObj) {
+	backupNow(true, formattedDate, function({success, backupName, backupObj}) {
 		// backup completed
 	});
 });
@@ -67,7 +67,7 @@ function onAlarm (alarm) {
 
 	// if last backup time != lastTabsEdit
 	//	perform automatic backup
-		backupNow(true, formattedDate, function(success, backupName, backupObj) {
+		backupNow(true, formattedDate, function({success, backupName, backupObj}) {
 			// automatic backup completed
 			var popupViews = chrome.extension.getViews({type: "popup"});
 			if (popupViews.length > 0) {
@@ -246,7 +246,7 @@ function backupNow(isAutomatic, backupName, callbackDone) {
 				//alert ("Error: " + chrome.runtime.lastError.message);
 				updateBrowserActionIcon (1);
 
-				callbackDone(false);
+				callbackDone({success: false});
 			} else {
 				console.log("backup saved");
 				//alert("Backup saved successfully!");
@@ -267,12 +267,16 @@ function backupNow(isAutomatic, backupName, callbackDone) {
 						if (chrome.runtime.lastError) {
 							console.log ("Error saving backups_list: " + chrome.runtime.lastError.message);
 							updateBrowserActionIcon (1);
-							callbackDone(false);
+							callbackDone({success: false});
 						} else {
 							console.log("Backups list saved successfully");
 
 							updateBrowserActionIcon (0);
-							callbackDone(true, backupName, fullBackup);
+							callbackDone({
+								success: true,
+								backupName,
+								backupObj: fullBackup,
+							});
 
 							if (backupsList.length > items.prefs_max_backup_items) {
 								deleteOldestBackup();
@@ -432,3 +436,32 @@ function restoreNow(backupName) {
 		}
 	});
 }
+
+/**
+ * Callback from other pages (like the popup).
+ */
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+	console.log(`Got message from ${sender.id}: action=${request.action}`, request);
+
+	let asyncResponse = false;
+	switch (request?.action) {
+		case 'initAlarm':
+			initAlarm();
+			break;
+
+		case 'restoreNow':
+			restoreNow(...request.args);
+			break;
+
+		case 'deleteBackup':
+			deleteBackup(...request.args, sendResponse);
+			asyncResponse = true;
+			break;
+
+		case 'backupNowManual':
+			backupNowManual(sendResponse);
+			asyncResponse = true;
+			break;
+	}
+	return asyncResponse;
+});

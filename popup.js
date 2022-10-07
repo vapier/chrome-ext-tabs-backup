@@ -140,7 +140,10 @@ function insertBackupItem (backupName, backupObj, insertAtBeginning, doAnimation
 		return function(event) {
 			bootbox.confirm("Open Windows & Tabs of backup '" + backupName + "'?", function(confirmed) {
 				if (confirmed) {
-					chrome.runtime.getBackgroundPage((bg) => bg.restoreNow(backupName));
+					chrome.runtime.sendMessage({
+						action: 'restoreNow',
+						args: [backupName],
+					});
 				}
 			});
 
@@ -157,9 +160,10 @@ function insertBackupItem (backupName, backupObj, insertAtBeginning, doAnimation
 
 			bootbox.confirm("Delete backup '" + backupName + "'?", function(confirmed) {
 				if (confirmed) {
-					chrome.runtime.getBackgroundPage((bg) => {
-						bg.deleteBackup(backupName, () => updateStorageInfo());
-					});
+					chrome.runtime.sendMessage({
+						action: 'deleteBackup',
+						args: [backupName],
+					}, () => updateStorageInfo());
 
 					//if (elem.parentNode) {
 					//  elem.parentNode.removeChild(elem);
@@ -321,7 +325,9 @@ function menu_backupNow() {
 
 	lastTimeBackupNowClicked = new Date().getTime();
 
-	chrome.runtime.getBackgroundPage((bg) => bg.backupNowManual(function(success, backupName, backupObj) {
+	chrome.runtime.sendMessage({
+		action: 'backupNowManual',
+	}, function({success, backupName, backupObj}) {
 		if (success) {
 			//updateBackupsList();
 			insertBackupItem (backupName, backupObj, true /*insertAtBeginning*/, true /*doAnimation*/);
@@ -331,10 +337,13 @@ function menu_backupNow() {
 		} else {
 			alert('An error occured while creating the backup..');
 		}
-	}));
+	});
 
 }
 
 function menu_restoreNow() {
-	chrome.runtime.getBackgroundPage((bg) => bg.restoreNow('full_backup'));
+	chrome.runtime.sendMessage({
+		action: 'restoreNow',
+		args: ['full_backup'],
+	});
 }
