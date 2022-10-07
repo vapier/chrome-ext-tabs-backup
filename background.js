@@ -8,8 +8,11 @@ if (!localStorage.prefsBackupTimer) {
 	localStorage.prefsBackupTimer = "30";
 }
 
-if (!localStorage.lastBackupTime) {
-	localStorage.lastBackupTime = -1;
+// Create a backup on first install (or if storage is wiped for some reason).
+chrome.storage.local.get("backups_list", function(items) {
+	if (items.backups_list) {
+		return;
+	}
 
 	// Create a backup now
 	var d = new Date();
@@ -18,7 +21,7 @@ if (!localStorage.lastBackupTime) {
 	backupNow(true, formattedDate, function(success, backupName, backupObj) {
 		// backup completed
 	});
-}
+});
 
 function initAlarm () {
 	//console.log("initAlarm");
