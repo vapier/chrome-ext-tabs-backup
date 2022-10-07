@@ -38,7 +38,7 @@ function menu_ShowOptions () {
 }
 
 function menu_ShowAdvancedView() {
-	chrome.tabs.create({url:chrome.extension.getURL("advanced.html")});
+	chrome.tabs.create({url: "/advanced.html"});
 }
 
 function menu_ShowOlderBackups () {
