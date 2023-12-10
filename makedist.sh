@@ -11,7 +11,7 @@ print(data[key])
 ' "manifest.json" "${key}"
 }
 
-PN=$(json_value name | sed 's:[[:space:]/]:_:g' | tr '[:upper:]' '[:lower:]')
+PN=$(json_value name | sed -e 's:[[:space:]/]:_:g' -e 's:[^a-z0-9_-]::g' | tr '[:upper:]' '[:lower:]')
 PV=$(json_value version)
 P="${PN}-${PV}"
 
