@@ -57,18 +57,15 @@ function onAlarm (alarm) {
 
 chrome.alarms.onAlarm.addListener(onAlarm);
 
-function date_prependZero (val) {
-	return val < 10 ? "0" + val : "" + val;
-}
-
-// yyyy-m-d h:i:s
-function date_format (d) {
-	var monthOneOffset = d.getMonth() + 1; // convert from 0-11 to 1-12
-
-	var formattedDate = d.getFullYear() + "-" + date_prependZero(monthOneOffset) + "-" + date_prependZero(d.getDate())
-		+ " " + date_prependZero(d.getHours()) + ":" + date_prependZero(d.getMinutes()) + ":" + date_prependZero(d.getSeconds());
-
-	return formattedDate;
+// yyyy-mm-dd hh:mm:ss
+function date_format(d) {
+	const prependZero = (val) => val.toString().padStart(2, '0');
+	return d.getFullYear() + "-" +
+		prependZero(d.getMonth() + 1) + "-" +
+		prependZero(d.getDate()) + " " +
+		prependZero(d.getHours()) + ":" +
+		prependZero(d.getMinutes()) + ":" +
+		prependZero(d.getSeconds());
 }
 
 
