@@ -19,6 +19,7 @@ rm -rf "${P}"
 mkdir "${P}"
 
 cp -r *.css *.html *.js *.json *.png img "${P}"/
+sed -i '/"key":/d' "${P}/manifest.json"
 zip="${P}.zip"
 rm -f "${zip}"
 zip -r "${zip}" "${P}"
