@@ -193,6 +193,11 @@ function backupNow(isAutomatic, backupName, callbackDone) {
 
 				//console.log("==> Tab " + j + " (" + tab.index + "): " + tabUrl);
 
+				// Ignore windows that we can't/shouldn't backup.
+				if (tab.url.startsWith('chrome-untrusted://')) {
+					continue;
+				}
+
 				var bkpTab = {
 					url: tab.url,
 					title: tab.title,
@@ -204,9 +209,11 @@ function backupNow(isAutomatic, backupName, callbackDone) {
 				bkpWindow.tabs.push(bkpTab);
 			}
 
-			totNumTabs += windowTabs.length;
+			if (bkpWindow.tabs.length) {
+				totNumTabs += bkpWindow.tabs.length;
 
-			fullBackup.windows.push(bkpWindow);
+				fullBackup.windows.push(bkpWindow);
+			}
 		}
 
 		if (totNumTabs == 0)
