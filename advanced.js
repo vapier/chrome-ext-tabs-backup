@@ -297,29 +297,6 @@ function insertBackupItem (backupName, backupObj, insertAtBeginning, doAnimation
 	//	};
 	//})(backupName);
 
-	//var deleteFuncHandler = (function(backupName, elem) {
-	//	return function(event) {
-			/*if (!confirm("Delete backup '" + backupName + "'?")) {
-				return;
-			}*/
-
-	//		bootbox.confirm("Delete backup '" + backupName + "'?", function(confirmed) {
-	//			if (confirmed) {
-	//				chrome.extension.getBackgroundPage().deleteBackup(backupName, function() {
-
-	//				});
-
-					//if (elem.parentNode) {
-					//  elem.parentNode.removeChild(elem);
-					//
-	//				removeBackupItemDiv (backupName);
-	//			}
-	//		});
-
-
-	//	};
-	//})(backupName, elem);
-
 	if (insertAtBeginning && backupsDiv.childNodes.length > 0) {
 		// some items already exist
 		var firstNode = backupsDiv.childNodes[0];

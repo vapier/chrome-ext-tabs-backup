@@ -122,20 +122,12 @@ function deleteOldestBackup () {
 					return;
 				}
 
-				deleteBackup (backupsList[i], loopFunc);
+				deleteBackup(backupsList[i]).then(loopFunc);
 				i++;
 			};
 
 			loopFunc ();
 		}
-
-		//for (var i = 0; i < numItemsToDelete; i++) {
-		// TODO WARNING: I'm calling deleteBackup rapidly, while deleting is async...(I should wait for each delete to complete before deleting the next)
-			//deleteBackup (backupsList[i], function() {
-
-			//});
-		//}
-
 	});
 }
 
@@ -293,44 +285,30 @@ function updateBrowserActionIcon (status) {
 	chrome.action.setIcon({path: icon});
 }
 
-function deleteBackup (backupName, callback) {
+async function deleteBackup(backupName) {
 	console.log("Deleting backup " + backupName);
 
-	chrome.storage.local.remove(backupName, function() {
-		//console.log ("=> Deleted backup " + backupName);
+	await chrome.storage.local.remove(backupName);
+	//console.log("=> Deleted backup " + backupName);
 
-		chrome.storage.local.get("backups_list", function(items) {
-			//console.log ("==> got backups_list " + backupName);
+	const items = await chrome.storage.local.get("backups_list");
+	//console.log("==> got backups_list " + backupName);
 
-			if(!items.backups_list) {
-				callback();
-				return;
-			}
+	if (!items.backups_list) {
+		return;
+	}
 
-			var backupsList = items.backups_list;
+	var backupsList = items.backups_list;
 
-			var index = backupsList.indexOf(backupName);
-			if (index >= 0) {
-				backupsList.splice(index, 1);
-			}
+	var index = backupsList.indexOf(backupName);
+	if (index >= 0) {
+		backupsList.splice(index, 1);
+	}
 
-			//console.log ("===> Updating backups_list (removing " + backupName + ")");
+	//console.log("===> Updating backups_list (removing " + backupName + ")");
 
-			chrome.storage.local.set({"backups_list": backupsList}, function() {
-				//console.log ("===> Updated backups_list (removed " + backupName + ")");
-
-				callback();
-			});
-
-			//console.log ("==> EXIT got backups_list " + backupName);
-		});
-
-		//console.log ("=> EXIT Deleted backup " + backupName);
-	});
-
-	//console.log("EXIT Deleting backup " + backupName);
-
-
+	await chrome.storage.local.set({"backups_list": backupsList});
+	//console.log("===> Updated backups_list (removed " + backupName + ")");
 }
 
 function restoreNow(backupName) {
@@ -440,7 +418,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 			break;
 
 		case 'deleteBackup':
-			deleteBackup(...request.args, sendResponse);
+			deleteBackup(...request.args).then(sendResponse);
 			asyncResponse = true;
 			break;
 
