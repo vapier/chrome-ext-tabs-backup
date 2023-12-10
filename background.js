@@ -78,38 +78,23 @@ function backupNowManual (callbackDone) {
 
 }
 
-function deleteOldestBackup () {
-	chrome.storage.local.get(function(items) {
-		if(!items.backups_list) {
-			return;
-		}
+async function deleteOldestBackup() {
+	const items = await chrome.storage.local.get();
+	if (!items.backups_list) {
+		return;
+	}
 
-		var backupsList = items.backups_list;
-		var numItemsToDelete = backupsList.length - items.prefs_max_backup_items;
-		if (numItemsToDelete > 0) {
-			var i = 0;
-			var loopFunc = function () {
-				//
-				if (i > 0) {
-					var deletedBackupName = backupsList[i-1];
-					chrome.runtime.sendMessage({
-						action: 'removeBackupItemDiv',
-						args: [deletedBackupName],
-					});
-				}
-				//
+	const backupsList = items.backups_list;
+	const numItemsToDelete = backupsList.length - items.prefs_max_backup_items;
+	for (let i = 0; i < numItemsToDelete; ++i) {
+		const deletedBackupName = backupsList[i];
+		await deleteBackup(deletedBackupName);
 
-				if (i >= numItemsToDelete) {
-					return;
-				}
-
-				deleteBackup(backupsList[i]).then(loopFunc);
-				i++;
-			};
-
-			loopFunc ();
-		}
-	});
+		chrome.runtime.sendMessage({
+			action: 'removeBackupItemDiv',
+			args: [deletedBackupName],
+		});
+	}
 }
 
 //var isCreatingBackup = false;
