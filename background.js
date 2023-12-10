@@ -48,18 +48,10 @@ function onAlarm (alarm) {
 	//	perform automatic backup
 		backupNow(true, formattedDate, function({success, backupName, backupObj}) {
 			// automatic backup completed
-			var popupViews = chrome.extension.getViews({type: "popup"});
-			if (popupViews.length > 0) {
-				for (var i = 0; i < popupViews.length; i++) {
-					var popupView = popupViews[i];
-					if (!popupView.insertBackupItem) {
-						continue;
-					}
-
-					popupView.insertBackupItem(backupName, backupObj, true /*insertAtBeginning*/, true /*doAnimation*/);
-					popupView.updateStorageInfo();
-				}
-			}
+			chrome.runtime.sendMessage({
+				action: 'insertBackupItem',
+				args: [backupName, backupObj, true /*insertAtBeginning*/, true /*doAnimation*/],
+			});
 		});
 }
 
@@ -103,18 +95,10 @@ function deleteOldestBackup () {
 				//
 				if (i > 0) {
 					var deletedBackupName = backupsList[i-1];
-					var popupViews = chrome.extension.getViews({type: "popup"});
-					if (popupViews.length > 0) {
-						for (var j = 0; j < popupViews.length; j++) {
-							var popupView = popupViews[j];
-							if (!popupView.removeBackupItemDiv) {
-								continue;
-							}
-
-							popupView.removeBackupItemDiv(deletedBackupName);
-							popupView.updateStorageInfo();
-						}
-					}
+					chrome.runtime.sendMessage({
+						action: 'removeBackupItemDiv',
+						args: [deletedBackupName],
+					});
 				}
 				//
 

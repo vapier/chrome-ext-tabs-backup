@@ -675,15 +675,21 @@ function menu_restoreNow() {
 	});
 }
 
-//document.onload(function () {
-//var a = document.getElementById("myid");
-//a.innerHTML = "ciaociao";
-//});
+/**
+ * Callback from other pages (like the background).
+ */
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+	console.log(`Got message from ${sender.id}: action=${request.action}`, request);
 
-/*
-var storageLocal = chrome.storage.local;
-storageLocal.getBytesInUse(null, function(bytesInUse) {
-	var elem = document.createElement("div");
-	elem.innerHTML = "<b>BYTES IN USE: " + bytesInUse + "</b><br />";
-	document.body.appendChild(elem);
-});*/
+	let asyncResponse = false;
+	switch (request?.action) {
+		case 'insertBackupItem':
+			insertBackupItem(...request.args);
+			break;
+
+		case 'removeBackupItemDiv':
+			removeBackupItemDiv(...request.args);
+			break;
+	}
+	return asyncResponse;
+});

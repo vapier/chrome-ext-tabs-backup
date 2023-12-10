@@ -347,3 +347,24 @@ function menu_restoreNow() {
 		args: ['full_backup'],
 	});
 }
+
+/**
+ * Callback from other pages (like the background).
+ */
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+	console.log(`Got message from ${sender.id}: action=${request.action}`, request);
+
+	let asyncResponse = false;
+	switch (request?.action) {
+		case 'insertBackupItem':
+			insertBackupItem(...request.args);
+			updateStorageInfo();
+			break;
+
+		case 'removeBackupItemDiv':
+			removeBackupItemDiv(...request.args);
+			updateStorageInfo();
+			break;
+	}
+	return asyncResponse;
+});
