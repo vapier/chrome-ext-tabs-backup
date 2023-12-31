@@ -395,3 +395,35 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 	}
 	return asyncResponse;
 });
+
+/**
+ * Context menu callback.
+ */
+function onContextMenu(info, tab = undefined) {
+	switch (info.menuItemId) {
+		case 'feedback':
+			chrome.tabs.create({url: 'https://github.com/vapier/chrome-ext-tabs-backup/issues'});
+			break;
+	}
+}
+
+/**
+ * Setup context menus.
+ */
+async function installContextMenus() {
+	// Clear previous entries to avoid adding duplicates.
+	chrome.contextMenus.removeAll();
+
+	chrome.contextMenus.onClicked.addListener(onContextMenu);
+
+	const entries = [
+		{
+			'type': 'normal',
+			'id': 'feedback',
+			'title': 'Send feedback',
+			'contexts': ['action'],
+		},
+	];
+	entries.forEach((entries) => chrome.contextMenus.create(entries));
+}
+installContextMenus();
