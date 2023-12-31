@@ -254,7 +254,12 @@ function updateBrowserActionIcon (status) {
 async function deleteBackup(backupName) {
 	console.log("Deleting backup " + backupName);
 
-	await chrome.storage.local.remove(backupName);
+	try {
+		await chrome.storage.local.remove(backupName);
+	} catch (e) {
+		// If something bad got into the state, don't let it crash us.
+		console.error(`Deleting '${backupName}' failed: ${e}`);
+	}
 	//console.log("=> Deleted backup " + backupName);
 
 	const items = await chrome.storage.local.get("backups_list");
