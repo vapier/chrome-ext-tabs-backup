@@ -662,7 +662,7 @@ function menu_backupNow() {
 
 			//bootbox.alert("Backup successfully created!");
 		} else {
-			alert('An error occured while creating the backup..');
+			alert('An error occured while creating the backup...');
 		}
 	});
 

@@ -72,7 +72,7 @@ function saveOptions () {
 }
 
 function restoreToDefault() {
-	// those values are also set in background.js..
+	// those values are also set in background.js...
 	setSelectValue ("prefsSelectBackupPeriod", "5");
 	setSelectValue ("prefsSelectMaxBackups", "30");
 	setThemeValue("system");

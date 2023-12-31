@@ -102,7 +102,7 @@ async function deleteOldestBackup() {
 function backupNow(isAutomatic, backupName, callbackDone) {
 	console.log("backupNow - isAutomatic: " + isAutomatic + " name: " + backupName);
 	/*if (isCreatingBackup === true) {
-		console.log("backupNow - already running..skipping..");
+		console.log("backupNow - already running ... skipping ...");
 		return;
 	}*/
 
@@ -186,7 +186,7 @@ function backupNow(isAutomatic, backupName, callbackDone) {
 		chrome.storage.local.set(storageSetValues, function () {
 			if (chrome.runtime.lastError) {
 				//isCreatingBackup = false;
-				// TODO change icon to error..
+				// TODO change icon to error...
 				//alert ("Error: " + chrome.runtime.lastError.message);
 				updateBrowserActionIcon (1);
 
