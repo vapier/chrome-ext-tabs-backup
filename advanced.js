@@ -262,8 +262,8 @@ function insertBackupItem (backupName, backupObj, insertAtBeginning, doAnimation
 					'<div class="backupItemContent" id="' + backupItemClickId + '">' +
 					 '<div class="backupItemTitle">' + backupName + "</div>" +
 					 '<div class="backupItemDetails">' +
-						'Nr. Windows:<span class="backupItemDetailsNr">' + backupObj.windows.length + '</span><br />' +
-						'Nr. Tabs:<span class="backupItemDetailsNr">' + backupObj.totNumTabs + '</span>' +
+						'Num Windows:<span class="backupItemDetailsNr">' + backupObj.windows.length + '</span><br />' +
+						'Num Tabs:<span class="backupItemDetailsNr">' + backupObj.totNumTabs + '</span>' +
 					 '</div>' +
 
 					// '<div class="backupItemToolbar">' +
@@ -434,7 +434,7 @@ function showAdvancedRestoreFor (backupName) {
 			var windowTitleDiv = document.createElement('div');
 
 			//windowTitleDiv.innerHTML = "<span>Window " + (i+1) + '</span>' +
-			//							'<span style="float: right; font-size: 12px;">Nr. Tabs: ' + windowTabs.length + '</span>';
+			//							'<span style="float: right; font-size: 12px;">Num Tabs: ' + windowTabs.length + '</span>';
 
 			windowTitleDiv.className = 'windowTitleDiv';
 
@@ -469,7 +469,7 @@ function showAdvancedRestoreFor (backupName) {
 				`<span style="font-weight: bold">Window ${i + 1} (${window.state}) ${window.width}×${window.height} @ ${window.top}×${window.left}</span>` +
 				`<span style="float: right; font-size: 11px;">Tabs: ${windowTabs.length}</span>`;
 			//windowTitleSpan.innerHTML = '<span>Window ' + (i+1) + '</span>' +
-			//							'<br /><span style="font-size: 10px;">Nr. Tabs: ' + windowTabs.length + '</span>';
+			//							'<br /><span style="font-size: 10px;">Num Tabs: ' + windowTabs.length + '</span>';
 
 			windowTitleDiv.appendChild(checkboxWindowElem);
 			windowTitleDiv.appendChild(checkboxWindowLabelElem);

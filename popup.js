@@ -117,8 +117,8 @@ function insertBackupItem (backupName, backupObj, insertAtBeginning, doAnimation
 					'<div class="backupItemContent">' +
 					 '<div class="backupItemTitle">' + backupName + "</div>" +
 					 '<div class="backupItemDetails">' +
-						'Nr. Windows:<span class="backupItemDetailsNr">' + backupObj.windows.length + '</span><br />' +
-						'Nr. Tabs:<span class="backupItemDetailsNr">' + backupObj.totNumTabs + '</span>' +
+						'Num Windows:<span class="backupItemDetailsNr">' + backupObj.windows.length + '</span><br />' +
+						'Num Tabs:<span class="backupItemDetailsNr">' + backupObj.totNumTabs + '</span>' +
 					 '</div>' +
 
 					 '<div class="backupItemToolbar">' +
