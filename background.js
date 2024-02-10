@@ -312,7 +312,7 @@ function restoreNow(backupName) {
 
 			//console.log ("Window " + i);
 
-			urlsToOpen = [];
+			const urlsToOpen = [];
 
 			const windowTabs = window.tabs;
 			for (let j = 0; j < windowTabs.length; j++) {
