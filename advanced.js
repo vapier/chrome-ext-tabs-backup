@@ -92,6 +92,13 @@ function menu_RestoreSelected_Real() {
 		if (!(key in windows)) {
 			windows[key] = [];
 			windowsKeys.push(key);
+
+			const checkboxWindow = document.getElementById(checkbox.tbrWindowId);
+			windows[key].top = checkboxWindow.tbrTop;
+			windows[key].left = checkboxWindow.tbrLeft;
+			windows[key].width = checkboxWindow.tbrWidth;
+			windows[key].height = checkboxWindow.tbrHeight;
+			windows[key].state = checkboxWindow.tbrState;
 		}
 
 		const tab = {
@@ -105,7 +112,16 @@ function menu_RestoreSelected_Real() {
 
 	function createWindow(windowProperties, windowTabs) {
 		// Create a new Window
-		chrome.windows.create(windowProperties, ({tabs}) => {
+		const state = windowProperties.state;
+		windowProperties.state = 'normal';
+		chrome.windows.create(windowProperties, ({id, tabs}) => {
+			// Chrome errors if the dimensions are set on non-normal windows.
+			// So we create the window first with the right settings, then
+			// update the window state.
+			if (state !== 'normal' && state !== undefined) {
+				chrome.windows.update(id, {state});
+			}
+
 			for (let tabi = 0; tabi < tabs.length; ++tabi) {
 				const oldtab = windowTabs[tabi];
 				const newtab = tabs[tabi];
@@ -125,7 +141,12 @@ function menu_RestoreSelected_Real() {
 			var key = windowsKeys[i];
 			const windowTabs = windows[key];
 			var windowProperties = {
+				state: windowTabs.state,
 				url: windowTabs.map((x) => x.url),
+				top: windowTabs.top,
+				left: windowTabs.left,
+				width: windowTabs.width,
+				height: windowTabs.height,
 			};
 			createWindow(windowProperties, windowTabs);
 		}
@@ -465,7 +486,13 @@ function showAdvancedRestoreFor (backupName) {
 			checkboxWindowElem.id = checkboxWindowId;
 			checkboxWindowElem.className = "regular-checkbox parentIgnoreClick";
 
+			// custom attributes
 			checkboxWindowElem.tbrIsWindow = true;
+			checkboxWindowElem.tbrTop = window.top;
+			checkboxWindowElem.tbrLeft = window.left;
+			checkboxWindowElem.tbrWidth = window.width;
+			checkboxWindowElem.tbrHeight = window.height;
+			checkboxWindowElem.tbrState = window.state;
 
 			var checkboxWindowLabelElem = document.createElement('label')
 			checkboxWindowLabelElem.className = "parentIgnoreClick";
@@ -507,6 +534,7 @@ function showAdvancedRestoreFor (backupName) {
 				checkboxTabElem.className = "regular-checkbox";
 
 				// custom attributes
+				checkboxTabElem.tbrWindowId = checkboxWindowId;
 				checkboxTabElem.tbrBackupName = backupName;
 				checkboxTabElem.tbrWindowIndex = i;
 				checkboxTabElem.tbrTabUrl = tabUrl;
