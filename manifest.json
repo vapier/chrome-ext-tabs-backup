@@ -1,7 +1,7 @@
 {
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0hT6cJSM1y4/RVSC4zWucQHI1jBvbdw/qDMoDxYQ9u8MA8pSgRp8VEv4HS8AFFld5vXF6y9zNM/NmTTwX8iJVlx+u3/ISr+eMWO56RRMSRkNKb1B/v5EFE1/TYQHjya12kMJiIa5dSt0s4+bt6sV05mf2h11cBLqsNB1WKOpiMAYaB8myuYK4nG7DPmdfzxnKaStKhv4+BgGuJTEcohDybChu5f1rH1NC+BzxOieHvUIh4Ef+T4SjS22Xm7R+sF+4xCzCCWpOUWsS7h8WUc/MrQPkFiQ70aAcZVIihHNiXJ8eiDSSOzjIdBpuT2L/0BvsLwMihBYkP43VItv13Ba0QIDAQAB",
   "name": "vapier's tabs backup",
-  "version": "1.1.1",
+  "version": "1.2",
   "manifest_version": 3,
   "description": "Never lose your work again! Backup an entire Chrome session (windows and tabs).",
   "icons": { "16": "icon_16.png",
