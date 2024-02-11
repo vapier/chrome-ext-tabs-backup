@@ -62,12 +62,13 @@ function menu_ClearSelection () {
 	updateRestoreSelectedDiv();
 }
 
+// TODO: Unify with background.js:restoreNow logic.
 function menu_RestoreSelected_Real() {
 	var selectedCheckboxes = $("input:checked");
 
 	var restoreToMultipleWindows = $('#restoreSelectedRadioMultipleWindows').is(':checked');
 
-	var allUrls = [];
+	const allTabs = [];
 
 	var windows = {};
 	var windowsKeys = [];
@@ -84,8 +85,6 @@ function menu_RestoreSelected_Real() {
 		//checkbox.tbrWindowIndex
 		console.log("Restoring " + checkbox.tbrBackupName + " --> " + checkbox.tbrWindowIndex);
 
-		var tabUrl = checkbox.tbrTabUrl;
-
 		var windowIdx = checkbox.tbrWindowIndex;
 		var bkpName = checkbox.tbrBackupName;
 		var key = bkpName + "_" + windowIdx;
@@ -95,34 +94,46 @@ function menu_RestoreSelected_Real() {
 			windowsKeys.push(key);
 		}
 
-		windows[key].push(tabUrl);
+		const tab = {
+			url: checkbox.tbrTabUrl,
+			highlighted: checkbox.tbrTabHighlighted,
+			pinned: checkbox.tbrTabPinned,
+		};
+		windows[key].push(tab);
+		allTabs.push(tab);
+	}
 
-		allUrls.push(checkbox.tbrTabUrl);
+	function createWindow(windowProperties, windowTabs) {
+		// Create a new Window
+		chrome.windows.create(windowProperties, ({tabs}) => {
+			for (let tabi = 0; tabi < tabs.length; ++tabi) {
+				const oldtab = windowTabs[tabi];
+				const newtab = tabs[tabi];
+
+				if (oldtab.highlighted || oldtab.pinned) {
+					chrome.tabs.update(newtab.id, {
+						highlighted: oldtab.highlighted,
+						pinned: oldtab.pinned,
+					});
+				}
+			}
+		});
 	}
 
 	if (restoreToMultipleWindows) {
 		for (var i = 0; i < windowsKeys.length; i++) {
 			var key = windowsKeys[i];
-			var urls = windows[key];
-
+			const windowTabs = windows[key];
 			var windowProperties = {
-				url: urls
+				url: windowTabs.map((x) => x.url),
 			};
-
-			// Create a new Window
-			chrome.windows.create(windowProperties, function(createdWindow) {
-
-			});
+			createWindow(windowProperties, windowTabs);
 		}
 	} else {
 		var windowProperties = {
-			url: allUrls
+			url: allTabs.map((x) => x.url),
 		};
-
-		// Create a new Window
-		chrome.windows.create(windowProperties, function(createdWindow) {
-
-		});
+		createWindow(windowProperties, allTabs);
 	}
 }
 
@@ -499,6 +510,8 @@ function showAdvancedRestoreFor (backupName) {
 				checkboxTabElem.tbrBackupName = backupName;
 				checkboxTabElem.tbrWindowIndex = i;
 				checkboxTabElem.tbrTabUrl = tabUrl;
+				checkboxTabElem.tbrTabPinned = tab.pinned;
+				checkboxTabElem.tbrTabHighlighted = tab.highlighted;
 
 				var checkboxTabLabelElem = document.createElement('label')
 				checkboxTabLabelElem.htmlFor = checkboxId;
